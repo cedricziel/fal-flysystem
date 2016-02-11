@@ -1,6 +1,6 @@
 <?php
 $EM_CONF[$_EXTKEY] = array(
-    'title' => 'flysystem',
+    'title' => 'fal_flysystem',
     'description' => 'File Abstraction Layer driver for TYPO3 CMS that uses Flysystem',
     'category' => 'be',
     'author' => 'Cedric Ziel',
