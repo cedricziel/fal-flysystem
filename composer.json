@@ -1,0 +1,18 @@
+{
+    "name": "cedricziel/fal-flysystem",
+    "description": "File Abstraction Layer driver for TYPO3 CMS that uses Flysystem",
+    "type": "typo3-cms-extension",
+    "require-dev": {
+        "phpunit/phpunit": "^5.2"
+    },
+    "license": "GPL2+",
+    "authors": [
+        {
+            "name": "Cedric Ziel",
+            "email": "cedric@cedric-ziel.com"
+        }
+    ],
+    "require": {
+        "league/flysystem": "^1.0"
+    }
+}
