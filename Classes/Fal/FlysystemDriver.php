@@ -11,7 +11,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  * Class FlysystemDriver
  * @package CedricZiel\FalFlysystem\Fal
  */
-class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
+abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
 
     /**
      * @var AdapterInterface
@@ -25,21 +25,6 @@ class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function processConfiguration()
     {
         // TODO: Implement processConfiguration() method.
-    }
-
-    /**
-     * Initializes this object. This is called by the storage after the driver
-     * has been attached.
-     *
-     * @return void
-     */
-    public function initialize()
-    {
-        $driver = $this->configuration['driver'];
-        $path = $this->configuration['path'];
-        $adapter = new $driver($path);
-        DebuggerUtility::var_dump($adapter);
-        // TODO: Implement initialize() method.
     }
 
     /**

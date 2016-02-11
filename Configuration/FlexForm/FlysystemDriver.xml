@@ -6,20 +6,6 @@
     <ROOT>
         <type>array</type>
         <el>
-            <driver>
-                <TCEforms>
-                    <label>Driver</label>
-                    <config>
-                        <type>select</type>
-                        <items type="array">
-                            <numIndex index="0" type="array">
-                                <numIndex index="0">Local</numIndex>
-                                <numIndex index="1">League\Flysystem\Adapter\Local</numIndex>
-                            </numIndex>
-                        </items>
-                    </config>
-                </TCEforms>
-            </driver>
             <path>
                 <TCEforms>
                     <label>Path to files</label>
