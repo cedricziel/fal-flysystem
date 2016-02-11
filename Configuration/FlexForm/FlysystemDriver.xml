@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<T3DataStructure>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <ROOT>
+        <type>array</type>
+        <el>
+            <hostname>
+                <TCEforms>
+                    <label>Hostname:</label>
+                    <config>
+                        <type>input</type>
+                        <size>30</size>
+                        <eval>required</eval>
+                    </config>
+                </TCEforms>
+            </hostname>
+            <username>
+                <TCEforms>
+                    <label>Username:</label>
+                    <config>
+                        <type>input</type>
+                        <size>30</size>
+                        <eval>required</eval>
+                    </config>
+                </TCEforms>
+            </username>
+            <password>
+                <TCEforms>
+                    <label>Password:</label>
+                    <config>
+                        <type>input</type>
+                        <size>30</size>
+                        <eval>password, required</eval>
+                    </config>
+                </TCEforms>
+            </password>
+            <entrylevel>
+                <TCEforms>
+                    <label>Entry Level: (must end with a "/")</label>
+                    <config>
+                        <type>input</type>
+                        <size>30</size>
+                        <default>/</default>
+                        <eval>required</eval>
+                    </config>
+                </TCEforms>
+            </entrylevel>
+            <filemode>
+                <TCEforms>
+                    <label>Mode for creating files:</label>
+                    <config>
+                        <type>input</type>
+                        <size>30</size>
+                        <default>0640</default>
+                        <eval>required</eval>
+                    </config>
+                </TCEforms>
+            </filemode>
+            <foldermode>
+                <TCEforms>
+                    <label>Mode for creating folders:</label>
+                    <config>
+                        <type>input</type>
+                        <size>30</size>
+                        <default>0750</default>
+                        <eval>required</eval>
+                    </config>
+                </TCEforms>
+            </foldermode>
+            <publicurl>
+                <TCEforms>
+                    <label>Public URL:</label>
+                    <config>
+                        <type>input</type>
+                        <size>30</size>
+                        <eval>required</eval>
+                    </config>
+                </TCEforms>
+            </publicurl>
+        </el>
+    </ROOT>
+</T3DataStructure>
