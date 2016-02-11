@@ -6,79 +6,30 @@
     <ROOT>
         <type>array</type>
         <el>
-            <hostname>
+            <driver>
                 <TCEforms>
-                    <label>Hostname:</label>
+                    <label>Driver</label>
+                    <config>
+                        <type>select</type>
+                        <items type="array">
+                            <numIndex index="0" type="array">
+                                <numIndex index="0">Local</numIndex>
+                                <numIndex index="1">League\Flysystem\Adapter\Local</numIndex>
+                            </numIndex>
+                        </items>
+                    </config>
+                </TCEforms>
+            </driver>
+            <path>
+                <TCEforms>
+                    <label>Path to files</label>
                     <config>
                         <type>input</type>
                         <size>30</size>
                         <eval>required</eval>
                     </config>
                 </TCEforms>
-            </hostname>
-            <username>
-                <TCEforms>
-                    <label>Username:</label>
-                    <config>
-                        <type>input</type>
-                        <size>30</size>
-                        <eval>required</eval>
-                    </config>
-                </TCEforms>
-            </username>
-            <password>
-                <TCEforms>
-                    <label>Password:</label>
-                    <config>
-                        <type>input</type>
-                        <size>30</size>
-                        <eval>password, required</eval>
-                    </config>
-                </TCEforms>
-            </password>
-            <entrylevel>
-                <TCEforms>
-                    <label>Entry Level: (must end with a "/")</label>
-                    <config>
-                        <type>input</type>
-                        <size>30</size>
-                        <default>/</default>
-                        <eval>required</eval>
-                    </config>
-                </TCEforms>
-            </entrylevel>
-            <filemode>
-                <TCEforms>
-                    <label>Mode for creating files:</label>
-                    <config>
-                        <type>input</type>
-                        <size>30</size>
-                        <default>0640</default>
-                        <eval>required</eval>
-                    </config>
-                </TCEforms>
-            </filemode>
-            <foldermode>
-                <TCEforms>
-                    <label>Mode for creating folders:</label>
-                    <config>
-                        <type>input</type>
-                        <size>30</size>
-                        <default>0750</default>
-                        <eval>required</eval>
-                    </config>
-                </TCEforms>
-            </foldermode>
-            <publicurl>
-                <TCEforms>
-                    <label>Public URL:</label>
-                    <config>
-                        <type>input</type>
-                        <size>30</size>
-                        <eval>required</eval>
-                    </config>
-                </TCEforms>
-            </publicurl>
+            </path>
         </el>
     </ROOT>
 </T3DataStructure>

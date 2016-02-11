@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<T3DataStructure>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <ROOT>
+        <type>array</type>
+        <el>
+            <path>
+                <TCEforms>
+                    <label>Path to files</label>
+                    <config>
+                        <type>input</type>
+                        <size>30</size>
+                        <eval>required</eval>
+                    </config>
+                </TCEforms>
+            </path>
+        </el>
+    </ROOT>
+</T3DataStructure>
