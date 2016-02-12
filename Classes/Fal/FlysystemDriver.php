@@ -293,11 +293,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function deleteFile($fileIdentifier)
     {
-        // TODO: Implement deleteFile() method.
-        DebuggerUtility::var_dump([
-            '$fileIdentifier' => $fileIdentifier,
-        ], 'deleteFile');
-        $this->adapter->delete($fileIdentifier);
+        return $this->filesystem->delete($fileIdentifier);
     }
 
     /**
@@ -364,7 +360,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getFileContents($fileIdentifier)
     {
-        // TODO: Implement getFileContents() method.
+        return $this->filesystem->get($fileIdentifier);
     }
 
     /**
@@ -376,7 +372,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function setFileContents($fileIdentifier, $contents)
     {
-        // TODO: Implement setFileContents() method.
+        $bytes = mb_strlen($contents, '8bit');
+
+        $this->filesystem->put($fileIdentifier, $contents);
+        return $bytes;
     }
 
     /**
@@ -400,13 +399,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function folderExistsInFolder($folderName, $folderIdentifier)
     {
-        // TODO: Implement folderExistsInFolder() method.
-        DebuggerUtility::var_dump([
-            '$folderName' => $folderName,
-            '$folderIdentifier' => $folderIdentifier,
-        ], 'folderExistsInFolder');
-
-        return $this->adapter->has($folderIdentifier . $folderName);
+        return $this->filesystem->has($folderIdentifier . $folderName);
     }
 
     /**
@@ -572,7 +565,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         $sortRev = false
     ) {
         $calculatedFolderIdentifier = ltrim($this->canonicalizeAndCheckFolderIdentifier($folderIdentifier), '/');
-        $contents = $this->adapter->listContents($calculatedFolderIdentifier);
+        $contents = $this->filesystem->listContents($calculatedFolderIdentifier);
         $files = [];
 
         /*
@@ -584,12 +577,6 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
                     = $calculatedFolderIdentifier . $directoryItem['path'];
             }
         }
-
-        DebuggerUtility::var_dump([
-            '$contents' => $contents,
-            '$files' => $files,
-            '$folderIdentifier' => $folderIdentifier
-        ], 'getFilesInFolder');
 
         return $files;
     }

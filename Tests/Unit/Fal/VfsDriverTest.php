@@ -110,6 +110,19 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function itCanSetFileContents()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $byteSize = $driver->setFileContents('test.txt', 'test');
+        $this->assertEquals($byteSize, mb_strlen($driver->getFileContents('test.txt'), '8bit'));
+        $this->assertTrue($driver->getFilesystem()->has('test'));
+        $this->assertEquals('test', $driver->getFileContents('test.txt'));
+    }
+
+    /**
      * @return VfsDriver
      */
     private function getInitializedDriver()
