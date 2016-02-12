@@ -3,7 +3,7 @@
     "description": "File Abstraction Layer driver for TYPO3 CMS that uses Flysystem",
     "type": "typo3-cms-extension",
     "require-dev": {
-        "phpunit/phpunit": "^5.2",
+        "phpunit/phpunit": "~4.8.0",
         "league/flysystem-vfs": "^1.0"
     },
     "license": "GPL2+",
