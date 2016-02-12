@@ -12,7 +12,7 @@ class FlysystemLocalDriver extends FlysystemDriver
 {
     public function initialize()
     {
-        $path = $this->configuration['path'];
-        $this->adapter = new Local($path);
+        $this->entryPath = $this->configuration['path'];
+        $this->adapter = new Local($this->entryPath);
     }
 }

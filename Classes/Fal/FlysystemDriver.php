@@ -4,19 +4,42 @@ namespace CedricZiel\FalFlysystem\Fal;
 
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
+use League\Flysystem\Config;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
+use TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Class FlysystemDriver
  * @package CedricZiel\FalFlysystem\Fal
  */
-abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
+abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
+{
 
     /**
      * @var AdapterInterface
      */
     protected $adapter;
+
+    /**
+     * @var string
+     */
+    protected $entryPath;
+
+    /**
+     * FlysystemDriver constructor.
+     * @param array $configuration
+     */
+    public function __construct(array $configuration = [])
+    {
+        parent::__construct($configuration);
+        // The capabilities default of this driver. See CAPABILITY_* constants for possible values
+        $this->capabilities =
+            ResourceStorage::CAPABILITY_BROWSABLE
+            | ResourceStorage::CAPABILITY_PUBLIC
+            | ResourceStorage::CAPABILITY_WRITABLE;
+    }
 
     /**
      * Processes the configuration for this driver.
@@ -47,7 +70,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
      */
     public function getRootLevelFolder()
     {
-        // TODO: Implement getRootLevelFolder() method.
+        return '/';
     }
 
     /**
@@ -57,19 +80,30 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
      */
     public function getDefaultFolder()
     {
-        // TODO: Implement getDefaultFolder() method.
+        $identifier = '/_processed_/';
+        if ($this->folderExists($identifier) === false) {
+            $identifier = $this->createFolder('_processed_');
+        }
+        return $identifier;
     }
 
     /**
-     * Returns the public URL to a file.
-     * Either fully qualified URL or relative to PATH_site (rawurlencoded).
+     * Checks if a folder exists.
      *
-     * @param string $identifier
-     * @return string
+     * @param string $folderIdentifier
+     * @return bool
      */
-    public function getPublicUrl($identifier)
+    public function folderExists($folderIdentifier)
     {
-        // TODO: Implement getPublicUrl() method.
+        // TODO: Implement folderExists() method.
+        DebuggerUtility::var_dump([
+            '$folderIdentifier' => $folderIdentifier
+        ], 'folderExists');
+        if ('/' === $folderIdentifier) {
+            return true;
+        } else {
+            return $this->adapter->has('/' . $folderIdentifier);
+        }
     }
 
     /**
@@ -84,6 +118,29 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function createFolder($newFolderName, $parentFolderIdentifier = '', $recursive = false)
     {
         // TODO: Implement createFolder() method.
+        $this->adapter->createDir($newFolderName, new Config);
+        DebuggerUtility::var_dump([
+            '$newFolderName' => $newFolderName,
+            '$parentFolderIdentifier' => $parentFolderIdentifier,
+            '$recursive' => $recursive
+        ], 'createFolder');
+
+        return $parentFolderIdentifier . $newFolderName;
+    }
+
+    /**
+     * Returns the public URL to a file.
+     * Either fully qualified URL or relative to PATH_site (rawurlencoded).
+     *
+     * @param string $identifier
+     * @return string
+     */
+    public function getPublicUrl($identifier)
+    {
+        // TODO: Implement getPublicUrl() method.
+        DebuggerUtility::var_dump([
+            '$identifier' => $identifier
+        ], 'getPublicUrl');
     }
 
     /**
@@ -96,6 +153,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function renameFolder($folderIdentifier, $newName)
     {
         // TODO: Implement renameFolder() method.
+        DebuggerUtility::var_dump([
+            '$folderIdentifier' => $folderIdentifier,
+            '$newName' => $newName
+        ], 'renameFolder');
     }
 
     /**
@@ -108,6 +169,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function deleteFolder($folderIdentifier, $deleteRecursively = false)
     {
         // TODO: Implement deleteFolder() method.
+        DebuggerUtility::var_dump([
+            '$folderIdentifier' => $folderIdentifier,
+            '$deleteRecursively' => $deleteRecursively
+        ], 'deleteFolder');
     }
 
     /**
@@ -119,17 +184,9 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function fileExists($fileIdentifier)
     {
         // TODO: Implement fileExists() method.
-    }
-
-    /**
-     * Checks if a folder exists.
-     *
-     * @param string $folderIdentifier
-     * @return bool
-     */
-    public function folderExists($folderIdentifier)
-    {
-        // TODO: Implement folderExists() method.
+        DebuggerUtility::var_dump([
+            '$fileIdentifier' => $fileIdentifier
+        ], 'fileExists');
     }
 
     /**
@@ -141,6 +198,9 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function isFolderEmpty($folderIdentifier)
     {
         // TODO: Implement isFolderEmpty() method.
+        DebuggerUtility::var_dump([
+            '$folderIdentifier' => $folderIdentifier
+        ], 'isFolderEmpty');
     }
 
     /**
@@ -159,6 +219,12 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function addFile($localFilePath, $targetFolderIdentifier, $newFileName = '', $removeOriginal = true)
     {
         // TODO: Implement addFile() method.
+        DebuggerUtility::var_dump([
+            '$localFilePath' => $localFilePath,
+            '$targetFolderIdentifier' => $targetFolderIdentifier,
+            '$newFileName' => $newFileName,
+            '$removeOriginal' => $removeOriginal
+        ], 'addFile');
     }
 
     /**
@@ -171,6 +237,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function createFile($fileName, $parentFolderIdentifier)
     {
         // TODO: Implement createFile() method.
+        DebuggerUtility::var_dump([
+            '$fileIdentifier' => $fileIdentifier,
+            '$parentFolderIdentifier' => $parentFolderIdentifier
+        ], 'createFile');
     }
 
     /**
@@ -186,6 +256,11 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function copyFileWithinStorage($fileIdentifier, $targetFolderIdentifier, $fileName)
     {
         // TODO: Implement copyFileWithinStorage() method.
+        DebuggerUtility::var_dump([
+            '$fileIdentifier' => $fileIdentifier,
+            '$targetFolderIdentifier' => $targetFolderIdentifier,
+            '$fileName' => $fileName
+        ], 'copyFileWithinStorage');
     }
 
     /**
@@ -198,6 +273,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function renameFile($fileIdentifier, $newName)
     {
         // TODO: Implement renameFile() method.
+        DebuggerUtility::var_dump([
+            '$fileIdentifier' => $fileIdentifier,
+            '$newName' => $newName
+        ], 'renameFile');
     }
 
     /**
@@ -210,6 +289,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function replaceFile($fileIdentifier, $localFilePath)
     {
         // TODO: Implement replaceFile() method.
+        DebuggerUtility::var_dump([
+            '$fileIdentifier' => $fileIdentifier,
+            '$localFilePath' => $localFilePath
+        ], 'replaceFile');
     }
 
     /**
@@ -223,6 +306,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function deleteFile($fileIdentifier)
     {
         // TODO: Implement deleteFile() method.
+        DebuggerUtility::var_dump([
+            '$fileIdentifier' => $fileIdentifier,
+        ], 'deleteFile');
+        $this->adapter->delete($fileIdentifier);
     }
 
     /**
@@ -326,6 +413,12 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function folderExistsInFolder($folderName, $folderIdentifier)
     {
         // TODO: Implement folderExistsInFolder() method.
+        DebuggerUtility::var_dump([
+            '$folderName' => $folderName,
+            '$folderIdentifier' => $folderIdentifier,
+        ], 'folderExistsInFolder');
+
+        return $this->adapter->has($folderIdentifier . $folderName);
     }
 
     /**
@@ -342,6 +435,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function getFileForLocalProcessing($fileIdentifier, $writable = true)
     {
         // TODO: Implement getFileForLocalProcessing() method.
+        DebuggerUtility::var_dump([
+            '$fileIdentifier' => $fileIdentifier,
+            '$writable' => $writable,
+        ], 'getFileForLocalProcessing');
     }
 
     /**
@@ -353,7 +450,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
      */
     public function getPermissions($identifier)
     {
-        // TODO: Implement getPermissions() method.
+        return array(
+            'r' => true,
+            'w' => true,
+        );
     }
 
     /**
@@ -367,6 +467,9 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function dumpFileContents($identifier)
     {
         // TODO: Implement dumpFileContents() method.
+        DebuggerUtility::var_dump([
+            '$identifier' => $identifier,
+        ], 'dumpFileContents');
     }
 
     /**
@@ -385,6 +488,21 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function isWithin($folderIdentifier, $identifier)
     {
         // TODO: Implement isWithin() method.
+        DebuggerUtility::var_dump([
+            '$folderIdentifier' => $folderIdentifier,
+            '$identifier' => $identifier,
+        ], 'isWithin');
+
+        $contents = $this->adapter->listContents($folderIdentifier);
+        DebuggerUtility::var_dump($contents);
+
+        if ($folderIdentifier === $identifier) {
+            return TRUE;
+        } elseif (substr($folderIdentifier, -strlen($identifier)) === $identifier) {
+            return TRUE;
+        }
+
+        return file_exists($this->entryPath . $folderIdentifier . $identifier);
     }
 
     /**
@@ -398,6 +516,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = array())
     {
         // TODO: Implement getFileInfoByIdentifier() method.
+        DebuggerUtility::var_dump([
+            '$fileIdentifier' => $fileIdentifier,
+            '$propertiesToExtract' => $propertiesToExtract,
+        ], 'getFileInfoByIdentifier');
     }
 
     /**
@@ -409,6 +531,15 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function getFolderInfoByIdentifier($folderIdentifier)
     {
         // TODO: Implement getFolderInfoByIdentifier() method.
+        DebuggerUtility::var_dump([
+            '$folderIdentifier' => $folderIdentifier,
+        ], 'getFolderInfoByIdentifier');
+
+        return [
+            'identifier' => $folderIdentifier,
+            'name' => PathUtility::basename($folderIdentifier),
+            'storage' => $this->storageUid
+        ];
     }
 
     /**
@@ -421,6 +552,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function getFileInFolder($fileName, $folderIdentifier)
     {
         // TODO: Implement getFileInFolder() method.
+        DebuggerUtility::var_dump([
+            '$fileName' => $fileName,
+            '$folderIdentifier' => $folderIdentifier
+        ], 'getFileInFolder');
     }
 
     /**
@@ -448,7 +583,27 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
         $sort = '',
         $sortRev = false
     ) {
-        // TODO: Implement getFilesInFolder() method.
+        $calculatedFolderIdentifier = ltrim($this->canonicalizeAndCheckFolderIdentifier($folderIdentifier), '/');
+        $contents = $this->adapter->listContents($calculatedFolderIdentifier);
+        $files = [];
+
+        /*
+         * Filter directories
+         */
+        foreach ($contents as $directoryItem) {
+            if ($directoryItem['type'] === 'file') {
+                $files[$calculatedFolderIdentifier . $directoryItem['path']]
+                    = $calculatedFolderIdentifier . $directoryItem['path'];
+            }
+        }
+
+        DebuggerUtility::var_dump([
+            '$contents' => $contents,
+            '$files' => $files,
+            '$folderIdentifier' => $folderIdentifier
+        ], 'getFilesInFolder');
+
+        return $files;
     }
 
     /**
@@ -461,6 +616,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
     public function getFolderInFolder($folderName, $folderIdentifier)
     {
         // TODO: Implement getFolderInFolder() method.
+        DebuggerUtility::var_dump([
+            '$folderName' => $folderName,
+            '$folderIdentifier' => $folderIdentifier,
+        ], 'getFolderInFolder');
     }
 
     /**
@@ -478,6 +637,9 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
      *                     should fall back to "name".
      * @param bool $sortRev TRUE to indicate reverse sorting (last to first)
      * @return array of Folder Identifier
+     * @TODO: Implement pagination with $start and $numberOfItems
+     * @TODO: Implement directory filter callbacks
+     * @TODO: Implement sorting
      */
     public function getFoldersInFolder(
         $folderIdentifier,
@@ -488,7 +650,21 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
         $sort = '',
         $sortRev = false
     ) {
-        // TODO: Implement getFoldersInFolder() method.
+        $calculatedFolderIdentifier = ltrim($this->canonicalizeAndCheckFolderIdentifier($folderIdentifier), '/');
+        $contents = $this->adapter->listContents($calculatedFolderIdentifier);
+        $directories = [];
+
+        /*
+         * Filter directories
+         */
+        foreach ($contents as $directoryItem) {
+            if ($directoryItem['type'] === 'dir') {
+                $directories[$calculatedFolderIdentifier . $directoryItem['path']]
+                    = $calculatedFolderIdentifier . $directoryItem['path'];
+            }
+        }
+
+        return $directories;
     }
 
     /**
@@ -498,10 +674,13 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
      * @param bool $recursive
      * @param array $filenameFilterCallbacks callbacks for filtering the items
      * @return int Number of files in folder
+     * @TODO: Implement recursive count
+     * @TODO: Implement filename filtering
      */
     public function countFilesInFolder($folderIdentifier, $recursive = false, array $filenameFilterCallbacks = array())
     {
-        // TODO: Implement countFilesInFolder() method.
+
+        return count($this->getFilesInFolder($folderIdentifier, 0, 0, $recursive, $filenameFilterCallbacks));
     }
 
     /**
@@ -518,5 +697,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver {
         array $folderNameFilterCallbacks = array()
     ) {
         // TODO: Implement countFoldersInFolder() method.
+        DebuggerUtility::var_dump([
+            '$folderIdentifier' => $folderIdentifier,
+            '$recursive' => $recursive,
+            '$folderNameFilterCallbacks' => $folderNameFilterCallbacks,
+        ], 'countFoldersInFolder');
     }
 }
