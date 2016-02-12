@@ -191,10 +191,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function isFolderEmpty($folderIdentifier)
     {
-        // TODO: Implement isFolderEmpty() method.
-        DebuggerUtility::var_dump([
-            '$folderIdentifier' => $folderIdentifier
-        ], 'isFolderEmpty');
+        return count($this->filesystem->listContents($folderIdentifier)) === 0;
     }
 
     /**

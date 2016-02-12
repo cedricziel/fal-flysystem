@@ -123,6 +123,16 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function itCanDetermineIfAFolderIsEmpty()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $this->assertTrue($driver->isFolderEmpty('/'));
+    }
+
+    /**
      * @return VfsDriver
      */
     private function getInitializedDriver()
