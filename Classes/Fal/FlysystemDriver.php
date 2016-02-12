@@ -151,7 +151,13 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function renameFolder($folderIdentifier, $newName)
     {
-        return $this->filesystem->rename($folderIdentifier, $newName);
+        $renameResult = $this->filesystem->rename($folderIdentifier, $newName);
+
+        if (true === $renameResult) {
+            return [$folderIdentifier => $newName];
+        } else {
+            return [$folderIdentifier => $folderIdentifier];
+        }
     }
 
     /**
