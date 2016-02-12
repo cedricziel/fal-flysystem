@@ -5,6 +5,7 @@ namespace CedricZiel\FalFlysystem\Fal;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
+use League\Flysystem\FilesystemInterface;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -16,6 +17,10 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  */
 abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
 {
+    /**
+     * @var FilesystemInterface
+     */
+    protected $filesystem;
 
     /**
      * @var AdapterInterface
@@ -47,7 +52,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function processConfiguration()
     {
-        // TODO: Implement processConfiguration() method.
+        $this->entryPath = $this->configuration['path'];
     }
 
     /**
@@ -95,14 +100,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function folderExists($folderIdentifier)
     {
-        // TODO: Implement folderExists() method.
-        DebuggerUtility::var_dump([
-            '$folderIdentifier' => $folderIdentifier
-        ], 'folderExists');
         if ('/' === $folderIdentifier) {
             return true;
         } else {
-            return $this->adapter->has('/' . $folderIdentifier);
+            return $this->filesystem->has('/' . $folderIdentifier);
         }
     }
 
@@ -117,13 +118,11 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function createFolder($newFolderName, $parentFolderIdentifier = '', $recursive = false)
     {
-        // TODO: Implement createFolder() method.
-        $this->adapter->createDir($newFolderName, new Config);
-        DebuggerUtility::var_dump([
-            '$newFolderName' => $newFolderName,
-            '$parentFolderIdentifier' => $parentFolderIdentifier,
-            '$recursive' => $recursive
-        ], 'createFolder');
+        if('' !== $parentFolderIdentifier) {
+            $this->filesystem->createDir($newFolderName);
+        } else {
+            $this->filesystem->createDir($parentFolderIdentifier . '/' . $newFolderName);
+        }
 
         return $parentFolderIdentifier . $newFolderName;
     }
@@ -152,11 +151,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function renameFolder($folderIdentifier, $newName)
     {
-        // TODO: Implement renameFolder() method.
-        DebuggerUtility::var_dump([
-            '$folderIdentifier' => $folderIdentifier,
-            '$newName' => $newName
-        ], 'renameFolder');
+        return $this->filesystem->rename($folderIdentifier, $newName);
     }
 
     /**
@@ -168,11 +163,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function deleteFolder($folderIdentifier, $deleteRecursively = false)
     {
-        // TODO: Implement deleteFolder() method.
-        DebuggerUtility::var_dump([
-            '$folderIdentifier' => $folderIdentifier,
-            '$deleteRecursively' => $deleteRecursively
-        ], 'deleteFolder');
+        return $this->filesystem->deleteDir($folderIdentifier);
     }
 
     /**
@@ -183,10 +174,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function fileExists($fileIdentifier)
     {
-        // TODO: Implement fileExists() method.
-        DebuggerUtility::var_dump([
-            '$fileIdentifier' => $fileIdentifier
-        ], 'fileExists');
+        return $this->filesystem->has($fileIdentifier);
     }
 
     /**
@@ -497,9 +485,9 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         DebuggerUtility::var_dump($contents);
 
         if ($folderIdentifier === $identifier) {
-            return TRUE;
+            return true;
         } elseif (substr($folderIdentifier, -strlen($identifier)) === $identifier) {
-            return TRUE;
+            return true;
         }
 
         return file_exists($this->entryPath . $folderIdentifier . $identifier);
@@ -651,7 +639,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         $sortRev = false
     ) {
         $calculatedFolderIdentifier = ltrim($this->canonicalizeAndCheckFolderIdentifier($folderIdentifier), '/');
-        $contents = $this->adapter->listContents($calculatedFolderIdentifier);
+        $contents = $this->filesystem->listContents($calculatedFolderIdentifier);
         $directories = [];
 
         /*
