@@ -125,16 +125,11 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
     {
         $parentFolderIdentifier = $this->canonicalizeAndCheckFolderIdentifier($parentFolderIdentifier);
         $newFolderName = trim($newFolderName, '/');
-        if (false === $recursive) {
-            $newFolderName = $this->sanitizeFileName($newFolderName);
-            $newIdentifier = $parentFolderIdentifier . $newFolderName . '/';
-            $this->filesystem->createDir($newIdentifier);
-        } else {
-            $parts = GeneralUtility::trimExplode('/', $newFolderName);
-            $parts = array_map(array($this, 'sanitizeFileName'), $parts);
-            $newFolderName = implode('/', $parts);
-            $newIdentifier = $parentFolderIdentifier . $newFolderName . '/';
-        }
+
+        $newFolderName = $this->sanitizeFileName($newFolderName);
+        $newIdentifier = $parentFolderIdentifier . $newFolderName . '/';
+        $this->filesystem->createDir($newIdentifier);
+
         return $newIdentifier;
     }
 
