@@ -14,6 +14,11 @@ use PHPUnit_Framework_TestCase;
  */
 class VfsDriverTest extends PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        define('PATH_site', dirname(__FILE__));
+    }
+
     /**
      * @test
      */
@@ -145,7 +150,7 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($driver->folderExists('/user_upload'));
         $defaultFolder = $driver->getDefaultFolder();
         $this->assertEquals('/user_upload/', $defaultFolder);
-        $this->assertTrue($driver->folderExists('/user_upload'));
+        $this->assertTrue($driver->folderExists('user_upload'));
     }
 
     /**
