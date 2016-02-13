@@ -229,7 +229,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
     {
         // TODO: Implement createFile() method.
         DebuggerUtility::var_dump([
-            '$fileIdentifier' => $fileIdentifier,
+            '$fileName' => $fileName,
             '$parentFolderIdentifier' => $parentFolderIdentifier
         ], 'createFile');
     }
