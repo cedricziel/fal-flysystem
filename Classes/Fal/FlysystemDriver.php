@@ -8,6 +8,7 @@ use League\Flysystem\Config;
 use League\Flysystem\FilesystemInterface;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\CMS\Core\Type\File\FileInfo;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
@@ -520,13 +521,15 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      *                                   If empty all will be extracted
      * @return array
      */
-    public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = array())
+    public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = [])
     {
-        // TODO: Implement getFileInfoByIdentifier() method.
-        DebuggerUtility::var_dump([
-            '$fileIdentifier' => $fileIdentifier,
-            '$propertiesToExtract' => $propertiesToExtract,
-        ], 'getFileInfoByIdentifier');
+        $relativeDriverPath = ltrim($fileIdentifier, '/');
+        if (!$this->filesystem->has($relativeDriverPath) || !$this->filesystem->get($relativeDriverPath)->isFile()) {
+            throw new \InvalidArgumentException('File ' . $fileIdentifier . ' does not exist.', 1314516809);
+        }
+        $dirPath = PathUtility::dirname($fileIdentifier);
+        $dirPath = $this->canonicalizeAndCheckFolderIdentifier($dirPath);
+        return $this->extractFileInformation($relativeDriverPath, $dirPath, $propertiesToExtract);
     }
 
     /**
@@ -537,11 +540,6 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getFolderInfoByIdentifier($folderIdentifier)
     {
-        // TODO: Implement getFolderInfoByIdentifier() method.
-        DebuggerUtility::var_dump([
-            '$folderIdentifier' => $folderIdentifier,
-        ], 'getFolderInfoByIdentifier');
-
         return [
             'identifier' => $folderIdentifier,
             'name' => PathUtility::basename($folderIdentifier),
@@ -586,7 +584,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         $start = 0,
         $numberOfItems = 0,
         $recursive = false,
-        array $filenameFilterCallbacks = array(),
+        array $filenameFilterCallbacks = [],
         $sort = '',
         $sortRev = false
     ) {
@@ -616,11 +614,8 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getFolderInFolder($folderName, $folderIdentifier)
     {
-        // TODO: Implement getFolderInFolder() method.
-        DebuggerUtility::var_dump([
-            '$folderName' => $folderName,
-            '$folderIdentifier' => $folderIdentifier,
-        ], 'getFolderInFolder');
+        $folderIdentifier = $this->canonicalizeAndCheckFolderIdentifier($folderIdentifier . '/' . $folderName);
+        return $folderIdentifier;
     }
 
     /**
@@ -647,7 +642,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         $start = 0,
         $numberOfItems = 0,
         $recursive = false,
-        array $folderNameFilterCallbacks = array(),
+        array $folderNameFilterCallbacks = [],
         $sort = '',
         $sortRev = false
     ) {
@@ -678,7 +673,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      * @TODO: Implement recursive count
      * @TODO: Implement filename filtering
      */
-    public function countFilesInFolder($folderIdentifier, $recursive = false, array $filenameFilterCallbacks = array())
+    public function countFilesInFolder($folderIdentifier, $recursive = false, array $filenameFilterCallbacks = [])
     {
 
         return count($this->getFilesInFolder($folderIdentifier, 0, 0, $recursive, $filenameFilterCallbacks));
@@ -692,16 +687,86 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      * @param array $folderNameFilterCallbacks callbacks for filtering the items
      * @return int Number of folders in folder
      */
-    public function countFoldersInFolder(
-        $folderIdentifier,
-        $recursive = false,
-        array $folderNameFilterCallbacks = array()
-    ) {
+    public function countFoldersInFolder($folderIdentifier, $recursive = false, array $folderNameFilterCallbacks = [])
+    {
         // TODO: Implement countFoldersInFolder() method.
         DebuggerUtility::var_dump([
             '$folderIdentifier' => $folderIdentifier,
             '$recursive' => $recursive,
             '$folderNameFilterCallbacks' => $folderNameFilterCallbacks,
         ], 'countFoldersInFolder');
+    }
+
+    /**
+     * Extracts information about a file from the filesystem.
+     *
+     * @param string $filePath The absolute path to the file
+     * @param string $containerPath The relative path to the file's container
+     * @param array $propertiesToExtract array of properties which should be returned, if empty all will be extracted
+     * @return array
+     */
+    protected function extractFileInformation($filePath, $containerPath, array $propertiesToExtract = array())
+    {
+        if (empty($propertiesToExtract)) {
+            $propertiesToExtract = array(
+                'size',
+                'atime',
+                'atime',
+                'mtime',
+                'ctime',
+                'mimetype',
+                'name',
+                'identifier',
+                'identifier_hash',
+                'storage',
+                'folder_hash'
+            );
+        }
+        $fileInformation = array();
+        foreach ($propertiesToExtract as $property) {
+            $fileInformation[$property] = $this->getSpecificFileInformation($filePath, $containerPath, $property);
+        }
+        return $fileInformation;
+    }
+
+    /**
+     * Extracts a specific FileInformation from the FileSystems.
+     *
+     * @param string $fileIdentifier
+     * @param string $containerPath
+     * @param string $property
+     *
+     * @return bool|int|string
+     * @throws \InvalidArgumentException
+     */
+    public function getSpecificFileInformation($fileIdentifier, $containerPath, $property)
+    {
+        $identifier = $this->canonicalizeAndCheckFileIdentifier($containerPath . PathUtility::basename($fileIdentifier));
+        $file = $this->filesystem->getMetadata($fileIdentifier);
+
+        switch ($property) {
+            case 'size':
+                return $file['size'];
+            case 'atime':
+                return $file['timestamp'];
+            case 'mtime':
+                return $file['timestamp'];
+            case 'ctime':
+                return $file['timestamp'];
+            case 'name':
+                return PathUtility::basename($fileIdentifier);
+            case 'mimetype':
+                return $file['mimetype'];
+            case 'identifier':
+                return $identifier;
+            case 'storage':
+                return $this->storageUid;
+            case 'identifier_hash':
+                return $this->hashIdentifier($identifier);
+            case 'folder_hash':
+                return $this->hashIdentifier($this->getParentFolderIdentifierOfIdentifier($identifier));
+            default:
+                throw new \InvalidArgumentException(sprintf('The information "%s" is not available.', $property));
+        }
     }
 }
