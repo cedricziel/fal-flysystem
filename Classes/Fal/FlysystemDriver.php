@@ -428,7 +428,9 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function folderExistsInFolder($folderName, $folderIdentifier)
     {
-        return $this->filesystem->has($folderIdentifier . $folderName);
+        $identifier = $folderIdentifier . '/' . $folderName;
+        $identifier = $this->canonicalizeAndCheckFolderIdentifier($identifier);
+        return $this->folderExists($identifier);
     }
 
     /**
