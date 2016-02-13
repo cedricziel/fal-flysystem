@@ -249,6 +249,16 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function itCanGetAfolderInsideAFolderIdentifier()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $this->assertEquals('/test/test/', $driver->getFolderInFolder('test', '/test'));
+    }
+
+    /**
      * @return VfsDriver
      */
     private function getInitializedDriver()
