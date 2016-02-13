@@ -168,6 +168,19 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function itCanCountFoldersInFolder()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $this->assertEquals(0, $driver->countFoldersInFolder('/'));
+        $driver->getFilesystem()->createDir('foo');
+        $driver->getFilesystem()->createDir('bar');
+        $this->assertEquals(2, $driver->countFoldersInFolder('/'));
+    }
+
+    /**
      * @return VfsDriver
      */
     private function getInitializedDriver()

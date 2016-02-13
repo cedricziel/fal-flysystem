@@ -597,8 +597,8 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
          */
         foreach ($contents as $directoryItem) {
             if ('file' === $directoryItem['type']) {
-                $files[$calculatedFolderIdentifier . $directoryItem['path']]
-                    = $calculatedFolderIdentifier . $directoryItem['path'];
+                $files['/' . $directoryItem['path']]
+                    = '/' . $directoryItem['path'];
             }
         }
 
@@ -655,8 +655,8 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
          */
         foreach ($contents as $directoryItem) {
             if ('dir' === $directoryItem['type']) {
-                $directories[$calculatedFolderIdentifier . $directoryItem['path']]
-                    = $calculatedFolderIdentifier . $directoryItem['path'];
+                $directories['/' . $directoryItem['path']]
+                    = '/' . $directoryItem['path'];
             }
         }
 
@@ -689,12 +689,16 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function countFoldersInFolder($folderIdentifier, $recursive = false, array $folderNameFilterCallbacks = [])
     {
-        // TODO: Implement countFoldersInFolder() method.
-        DebuggerUtility::var_dump([
-            '$folderIdentifier' => $folderIdentifier,
-            '$recursive' => $recursive,
-            '$folderNameFilterCallbacks' => $folderNameFilterCallbacks,
-        ], 'countFoldersInFolder');
+        $count = 0;
+        $filesystemRelativeIdentifier = ltrim($folderIdentifier, '/');
+        $directoryListing = $this->filesystem->listContents($filesystemRelativeIdentifier);
+        foreach($directoryListing as $entry) {
+            if('dir' === $entry['type']) {
+                $count++;
+            }
+        }
+
+        return $count;
     }
 
     /**
