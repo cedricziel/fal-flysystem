@@ -86,9 +86,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getDefaultFolder()
     {
-        $identifier = '/_processed_/';
-        if ($this->folderExists($identifier) === false) {
-            $identifier = $this->createFolder('_processed_');
+        $identifier = '/user_upload/';
+        $createFolder = !$this->folderExists($identifier);
+        if ($createFolder === true) {
+            $identifier = $this->createFolder('user_upload');
         }
         return $identifier;
     }

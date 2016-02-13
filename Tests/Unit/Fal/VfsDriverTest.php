@@ -133,6 +133,22 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * The default folder is used for uploads and save operations.
+     * As thus it should created automatically on retrieval.
+     *
+     * @test
+     */
+    public function itCanCreateADefaultFolderAutomatically()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $this->assertFalse($driver->folderExists('/user_upload'));
+        $defaultFolder = $driver->getDefaultFolder();
+        $this->assertEquals('/user_upload/', $defaultFolder);
+        $this->assertTrue($driver->folderExists('/user_upload'));
+    }
+
+    /**
      * @return VfsDriver
      */
     private function getInitializedDriver()
