@@ -181,6 +181,29 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function itCanCheckIfAnIdentifierIsWithinAContainer()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $this->markTestSkipped('Implement test is within');
+        //$this->assertTrue($driver->isWithin('/', '/'));
+        //$this->assertTrue($driver->isWithin('/test', '/test'));
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCheckIfAFileExistsInAFolder()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $driver->getFilesystem()->put('/test/foo.txt', 'test');
+        $this->assertTrue($driver->fileExistsInFolder('foo.txt', '/test'));
+    }
+
+    /**
      * @return VfsDriver
      */
     private function getInitializedDriver()

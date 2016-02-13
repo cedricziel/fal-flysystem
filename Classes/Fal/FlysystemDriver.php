@@ -414,7 +414,9 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function fileExistsInFolder($fileName, $folderIdentifier)
     {
-        // TODO: Implement fileExistsInFolder() method.
+        $identifier = $folderIdentifier . '/' . $fileName;
+        $identifier = $this->canonicalizeAndCheckFileIdentifier($identifier);
+        return $this->fileExists($identifier);
     }
 
     /**
@@ -495,22 +497,17 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function isWithin($folderIdentifier, $identifier)
     {
-        // TODO: Implement isWithin() method.
-        DebuggerUtility::var_dump([
-            '$folderIdentifier' => $folderIdentifier,
-            '$identifier' => $identifier,
-        ], 'isWithin');
-
-        $contents = $this->adapter->listContents($folderIdentifier);
-        DebuggerUtility::var_dump($contents);
-
-        if ($folderIdentifier === $identifier) {
-            return true;
-        } elseif (substr($folderIdentifier, -strlen($identifier)) === $identifier) {
+        $folderIdentifier = $this->canonicalizeAndCheckFileIdentifier($folderIdentifier);
+        $entryIdentifier = $this->canonicalizeAndCheckFileIdentifier($identifier);
+        if ($folderIdentifier === $entryIdentifier) {
             return true;
         }
-
-        return file_exists($this->entryPath . $folderIdentifier . $identifier);
+        // File identifier canonicalization will not modify a single slash so
+        // we must not append another slash in that case.
+        if ($folderIdentifier !== '/') {
+            $folderIdentifier .= '/';
+        }
+        return GeneralUtility::isFirstPartOfStr($entryIdentifier, $folderIdentifier);
     }
 
     /**
@@ -540,6 +537,8 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getFolderInfoByIdentifier($folderIdentifier)
     {
+        $folderIdentifier = $this->canonicalizeAndCheckFolderIdentifier($folderIdentifier);
+
         return [
             'identifier' => $folderIdentifier,
             'name' => PathUtility::basename($folderIdentifier),
@@ -556,11 +555,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getFileInFolder($fileName, $folderIdentifier)
     {
-        // TODO: Implement getFileInFolder() method.
-        DebuggerUtility::var_dump([
-            '$fileName' => $fileName,
-            '$folderIdentifier' => $folderIdentifier
-        ], 'getFileInFolder');
+        return $this->canonicalizeAndCheckFileIdentifier($folderIdentifier . '/' . $fileName);
     }
 
     /**
@@ -597,8 +592,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
          */
         foreach ($contents as $directoryItem) {
             if ('file' === $directoryItem['type']) {
-                $files['/' . $directoryItem['path']]
-                    = '/' . $directoryItem['path'];
+                $files['/' . $directoryItem['path']] = '/' . $directoryItem['path'];
             }
         }
 
@@ -692,8 +686,8 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         $count = 0;
         $filesystemRelativeIdentifier = ltrim($folderIdentifier, '/');
         $directoryListing = $this->filesystem->listContents($filesystemRelativeIdentifier);
-        foreach($directoryListing as $entry) {
-            if('dir' === $entry['type']) {
+        foreach ($directoryListing as $entry) {
+            if ('dir' === $entry['type']) {
                 $count++;
             }
         }
