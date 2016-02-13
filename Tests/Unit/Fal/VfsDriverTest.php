@@ -293,6 +293,17 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function itCanCreateFiles()
+    {
+        $driver = $this->getInitializedDriver();
+        $this->assertFalse($driver->fileExists('/test.txt'));
+        $driver->createFile('test.txt', '/');
+        $this->assertTrue($driver->fileExists('/test.txt'));
+    }
+
+    /**
      * @return VfsDriver
      */
     private function getInitializedDriver()

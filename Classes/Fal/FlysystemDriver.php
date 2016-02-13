@@ -8,6 +8,7 @@ use League\Flysystem\Config;
 use League\Flysystem\FilesystemInterface;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\Exception\FileOperationErrorException;
+use TYPO3\CMS\Core\Resource\Exception\InvalidFileNameException;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Type\File\FileInfo;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -259,14 +260,30 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      * @param string $fileName
      * @param string $parentFolderIdentifier
      * @return string
+     * @throws InvalidFileNameException
      */
     public function createFile($fileName, $parentFolderIdentifier)
     {
-        // TODO: Implement createFile() method.
-        DebuggerUtility::var_dump([
-            '$fileName' => $fileName,
-            '$parentFolderIdentifier' => $parentFolderIdentifier
-        ], 'createFile');
+        if (!$this->isValidFilename($fileName)) {
+            throw new InvalidFileNameException(
+                'Invalid characters in fileName "' . $fileName . '"',
+                1320572272
+            );
+        }
+
+        $parentFolderIdentifier = $this->canonicalizeAndCheckFolderIdentifier($parentFolderIdentifier);
+        $fileIdentifier =  $this->canonicalizeAndCheckFileIdentifier(
+            $parentFolderIdentifier . $this->sanitizeFileName(ltrim($fileName, '/'))
+        );
+
+        $path = ltrim($parentFolderIdentifier . $fileName, '/');
+        $result = $this->filesystem->put($path, '');
+
+        if ($result !== true) {
+            throw new \RuntimeException('Creating file ' . $fileIdentifier . ' failed.', 1320569854);
+        }
+
+        return $fileIdentifier;
     }
 
     /**
