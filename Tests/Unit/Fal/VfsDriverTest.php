@@ -46,6 +46,10 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
 
         $driver->getFilesystem()->put('/bar/foo.txt', 'bar');
         $this->assertTrue($driver->fileExists('/bar/foo.txt'));
+
+        // make sure fileExists fails on folders
+        $this->assertFalse($driver->fileExists('/bar/'));
+        $this->assertFalse($driver->fileExists('/bar'));
     }
 
     /**

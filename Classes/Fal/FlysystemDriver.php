@@ -189,7 +189,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function fileExists($fileIdentifier)
     {
-        return $this->filesystem->has($fileIdentifier);
+        if ($this->filesystem->has($fileIdentifier) && !$this->filesystem->get($fileIdentifier)->isDir()) {
+            return true;
+        }
+        return false;
     }
 
     /**
