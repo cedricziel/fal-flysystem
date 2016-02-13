@@ -106,7 +106,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         if ('/' === $folderIdentifier) {
             return true;
         } else {
-            return $this->filesystem->has('/' . $folderIdentifier);
+            return ($this->filesystem->has('/' . $folderIdentifier) && $this->filesystem->get('/' . $folderIdentifier)->isDir());
         }
     }
 
@@ -145,10 +145,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getPublicUrl($identifier)
     {
-        // TODO: Implement getPublicUrl() method.
-        DebuggerUtility::var_dump([
-            '$identifier' => $identifier
-        ], 'getPublicUrl');
+        return '/';
     }
 
     /**
@@ -757,7 +754,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
             case 'name':
                 return PathUtility::basename($fileIdentifier);
             case 'mimetype':
-                return $file['mimetype'];
+                return 'application/octet-stream';
             case 'identifier':
                 return $identifier;
             case 'storage':

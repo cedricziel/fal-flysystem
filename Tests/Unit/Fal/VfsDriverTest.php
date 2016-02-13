@@ -105,6 +105,9 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($driver->folderExists('/test/test2'));
         $driver->createFolder('test2', '/test');
         $this->assertTrue($driver->folderExists('/test/test2'));
+
+        $driver->getFilesystem()->put('/biz/baz.txt', 'test');
+        $this->assertFalse($driver->folderExists('/biz/baz.txt'));
     }
 
     /**
@@ -223,6 +226,22 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
         ];
 
         $this->assertEquals($expectedFolderInfo, $folderInfo);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanGetFileInfoByIdentifier()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $driver->getFilesystem()->put('foo.txt', 'bar');
+        //$fileInfoFromDriver = $driver->getFileInfoByIdentifier('/foo.txt');
+        $expectedFileInfo = [
+            'mimetype' => 'text/plain'
+        ];
+
+        // $this->assertEquals($expectedFileInfo, $fileInfoFromDriver);
     }
 
     /**
