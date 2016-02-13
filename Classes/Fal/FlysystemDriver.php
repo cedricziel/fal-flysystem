@@ -7,6 +7,7 @@ use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
 use League\Flysystem\FilesystemInterface;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
+use TYPO3\CMS\Core\Resource\Exception\FileOperationErrorException;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Type\File\FileInfo;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -172,10 +173,19 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      * @param string $folderIdentifier
      * @param bool $deleteRecursively
      * @return bool
+     * @throws FileOperationErrorException
      */
     public function deleteFolder($folderIdentifier, $deleteRecursively = false)
     {
-        return $this->filesystem->deleteDir($folderIdentifier);
+        $folderIdentifier = ltrim($folderIdentifier, '/');
+        $result = $this->filesystem->deleteDir(rtrim($folderIdentifier, '/'));
+        if (false === $result) {
+            throw new FileOperationErrorException(
+                'Deleting folder "' . $folderIdentifier . '" failed.',
+                1330119451
+            );
+        }
+        return $result;
     }
 
     /**

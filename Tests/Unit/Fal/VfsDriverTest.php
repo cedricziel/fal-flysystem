@@ -274,6 +274,25 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function itCanDeleteFolders()
+    {
+        $driver = $this->getInitializedDriver();
+        $driver->getFilesystem()->put('test/bar.txt', 'test');
+        $this->assertTrue($driver->folderExists('/test/'));
+        $driver->getFilesystem()->put('test2/bar.txt', 'test');
+        $this->assertTrue($driver->folderExists('/test2/'));
+        $driver->getFilesystem()->put('test3/bar.txt', 'test');
+        $this->assertTrue($driver->folderExists('/test3/'));
+
+
+        $this->markTestIncomplete('Implement deletion');
+        // $driver->deleteFolder('/test3/');
+        // $this->assertFalse($driver->folderExists('/test3/'));
+    }
+
+    /**
      * @return VfsDriver
      */
     private function getInitializedDriver()
