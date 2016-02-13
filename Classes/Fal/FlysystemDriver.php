@@ -8,6 +8,7 @@ use League\Flysystem\Config;
 use League\Flysystem\FilesystemInterface;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\Exception\FileOperationErrorException;
+use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Exception\InvalidFileNameException;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Type\File\FileInfo;
@@ -558,11 +559,18 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      *
      * @param string $folderIdentifier
      * @return array
+     * @throws FolderDoesNotExistException
      */
     public function getFolderInfoByIdentifier($folderIdentifier)
     {
         $folderIdentifier = $this->canonicalizeAndCheckFolderIdentifier($folderIdentifier);
 
+        if (!$this->folderExists($folderIdentifier)) {
+            throw new FolderDoesNotExistException(
+                'Folder "' . $folderIdentifier . '" does not exist.',
+                1314516810
+            );
+        }
         return [
             'identifier' => $folderIdentifier,
             'name' => PathUtility::basename($folderIdentifier),
