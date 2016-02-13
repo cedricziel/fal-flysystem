@@ -51,8 +51,8 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($emptyFileArray));
         $this->assertCount(0, $emptyFileArray);
 
-        $oneDirArray = $driver->getFoldersInFolder('/');
         $driver->getFilesystem()->put('/foo/bar.txt', 'baz');
+        $oneDirArray = $driver->getFoldersInFolder('/');
         $this->assertTrue(is_array($oneDirArray));
         $this->assertCount(1, $oneDirArray);
     }
