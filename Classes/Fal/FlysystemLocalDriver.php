@@ -21,7 +21,7 @@ class FlysystemLocalDriver extends FlysystemDriver
      */
     public function initialize()
     {
-        $this->adapter = new Local($this->entryPath);
+        $this->adapter = new Local($this->entryPath, LOCK_EX, Local::SKIP_LINKS);
         $this->filesystem = new Filesystem($this->adapter);
     }
 }
