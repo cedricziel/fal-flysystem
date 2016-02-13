@@ -88,7 +88,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
     {
         $identifier = '/user_upload/';
         $createFolder = !$this->folderExists($identifier);
-        if ($createFolder === true) {
+        if (true === $createFolder) {
             $identifier = $this->createFolder('user_upload');
         }
         return $identifier;
@@ -122,7 +122,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
     {
         $parentFolderIdentifier = $this->canonicalizeAndCheckFolderIdentifier($parentFolderIdentifier);
         $newFolderName = trim($newFolderName, '/');
-        if ($recursive == false) {
+        if (false === $recursive) {
             $newFolderName = $this->sanitizeFileName($newFolderName);
             $newIdentifier = $parentFolderIdentifier . $newFolderName . '/';
             $this->filesystem->createDir($newIdentifier);
@@ -199,7 +199,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function isFolderEmpty($folderIdentifier)
     {
-        return count($this->filesystem->listContents($folderIdentifier)) === 0;
+        return 0 === count($this->filesystem->listContents($folderIdentifier));
     }
 
     /**
@@ -582,7 +582,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
          * Filter directories
          */
         foreach ($contents as $directoryItem) {
-            if ($directoryItem['type'] === 'file') {
+            if ('file' === $directoryItem['type']) {
                 $files[$calculatedFolderIdentifier . $directoryItem['path']]
                     = $calculatedFolderIdentifier . $directoryItem['path'];
             }
@@ -643,7 +643,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
          * Filter directories
          */
         foreach ($contents as $directoryItem) {
-            if ($directoryItem['type'] === 'dir') {
+            if ('dir' === $directoryItem['type']) {
                 $directories[$calculatedFolderIdentifier . $directoryItem['path']]
                     = $calculatedFolderIdentifier . $directoryItem['path'];
             }
