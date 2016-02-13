@@ -208,12 +208,31 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function itCanGetFolderInfoByIdentifier()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $driver->getFilesystem()->createDir('test');
+        $folderInfo = $driver->getFolderInfoByIdentifier('/test');
+        $expectedFolderInfo = [
+            'name' => 'test',
+            'identifier' => '/test/',
+            'storage' => 33
+        ];
+
+        $this->assertEquals($expectedFolderInfo, $folderInfo);
+    }
+
+    /**
      * @return VfsDriver
      */
     private function getInitializedDriver()
     {
         $driver = new VfsDriver(['path' => '/']);
         $driver->initialize();
+        $driver->setStorageUid(33);
 
         return $driver;
     }
