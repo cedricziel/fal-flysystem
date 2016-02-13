@@ -371,7 +371,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getFileContents($fileIdentifier)
     {
-        return $this->filesystem->get($fileIdentifier);
+        return $this->filesystem->read($fileIdentifier);
     }
 
     /**
@@ -383,10 +383,9 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function setFileContents($fileIdentifier, $contents)
     {
-        $bytes = mb_strlen($contents, '8bit');
-
         $this->filesystem->put($fileIdentifier, $contents);
-        return $bytes;
+
+        return $this->filesystem->getSize($fileIdentifier);
     }
 
     /**
