@@ -15,6 +15,8 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  */
 class VfsDriverTest extends PHPUnit_Framework_TestCase
 {
+    protected $driver;
+
     public function setUp()
     {
         if (!defined('PATH_site')) {
@@ -256,6 +258,19 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
         $driver = $this->getInitializedDriver();
 
         $this->assertEquals('/test/test/', $driver->getFolderInFolder('test', '/test'));
+    }
+
+    /**
+     * @test
+     */
+    public function itCanDeleteFiles()
+    {
+        $this->driver = $driver = $this->getInitializedDriver();
+        $driver->getFilesystem()->put('test/bar.txt', 'test');
+        $this->assertTrue($driver->fileExists('/test/bar.txt'));
+
+        $driver->deleteFile('/test/bar.txt');
+        $this->assertFalse($driver->fileExists('/test/bar.txt'));
     }
 
     /**
