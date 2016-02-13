@@ -27,4 +27,7 @@
             <directory>Classes</directory>
         </whitelist>
     </filter>
+    <php>
+        <const name="TYPO3_OS" value="Unix"/>
+    </php>
 </phpunit>

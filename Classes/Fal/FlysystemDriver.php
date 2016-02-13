@@ -8,6 +8,7 @@ use League\Flysystem\Config;
 use League\Flysystem\FilesystemInterface;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
@@ -118,13 +119,19 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function createFolder($newFolderName, $parentFolderIdentifier = '', $recursive = false)
     {
-        if('' !== $parentFolderIdentifier) {
-            $this->filesystem->createDir($newFolderName);
+        $parentFolderIdentifier = $this->canonicalizeAndCheckFolderIdentifier($parentFolderIdentifier);
+        $newFolderName = trim($newFolderName, '/');
+        if ($recursive == false) {
+            $newFolderName = $this->sanitizeFileName($newFolderName);
+            $newIdentifier = $parentFolderIdentifier . $newFolderName . '/';
+            $this->filesystem->createDir($newIdentifier);
         } else {
-            $this->filesystem->createDir($parentFolderIdentifier . '/' . $newFolderName);
+            $parts = GeneralUtility::trimExplode('/', $newFolderName);
+            $parts = array_map(array($this, 'sanitizeFileName'), $parts);
+            $newFolderName = implode('/', $parts);
+            $newIdentifier = $parentFolderIdentifier . $newFolderName . '/';
         }
-
-        return $parentFolderIdentifier . $newFolderName;
+        return $newIdentifier;
     }
 
     /**
