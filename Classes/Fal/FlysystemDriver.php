@@ -217,13 +217,29 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function addFile($localFilePath, $targetFolderIdentifier, $newFileName = '', $removeOriginal = true)
     {
-        // TODO: Implement addFile() method.
-        DebuggerUtility::var_dump([
-            '$localFilePath' => $localFilePath,
-            '$targetFolderIdentifier' => $targetFolderIdentifier,
-            '$newFileName' => $newFileName,
-            '$removeOriginal' => $removeOriginal
-        ], 'addFile');
+        $localFilePath = $this->canonicalizeAndCheckFilePath($localFilePath);
+        $newFileName = $this->sanitizeFileName($newFileName !== '' ? $newFileName : PathUtility::basename($localFilePath));
+        $newFileIdentifier = $this->canonicalizeAndCheckFolderIdentifier($targetFolderIdentifier) . $newFileName;
+
+        $targetPath = ltrim($newFileIdentifier, '/');
+
+        $content = file_get_contents($localFilePath);
+
+        if ($removeOriginal) {
+            if (is_uploaded_file($localFilePath)) {
+                $result = $this->filesystem->put($targetPath, $content);
+            } else {
+                $result = rename($localFilePath, $targetPath);
+            }
+            unlink($localFilePath);
+        } else {
+            $result = $this->filesystem->put($targetPath, $content);
+        }
+        if ($result === false || !$this->filesystem->has($targetPath)) {
+            throw new \RuntimeException('Adding file ' . $localFilePath . ' at ' . $newFileIdentifier . ' failed.');
+        }
+        clearstatcache();
+        return $newFileIdentifier;
     }
 
     /**

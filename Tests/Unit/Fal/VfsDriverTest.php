@@ -4,6 +4,7 @@ namespace CedricZiel\FalFlysystem\Tests\Unit\Fal;
 
 use CedricZiel\FalFlysystem\Fal\VfsDriver;
 use PHPUnit_Framework_TestCase;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Class VfsDriverTest
@@ -16,7 +17,9 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        define('PATH_site', dirname(__FILE__));
+        if (!defined('PATH_site')) {
+            define('PATH_site', dirname(__FILE__));
+        }
     }
 
     /**
@@ -151,6 +154,17 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
         $defaultFolder = $driver->getDefaultFolder();
         $this->assertEquals('/user_upload/', $defaultFolder);
         $this->assertTrue($driver->folderExists('user_upload'));
+    }
+
+    /**
+     * @test
+     */
+    public function itCanAddFilesToTheStorage()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $driver->addFile(__FILE__, '/', '', false);
+        $this->assertTrue($driver->getFilesystem()->has(basename(__FILE__)));
     }
 
     /**
