@@ -427,6 +427,16 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
 
     /**
      * @test
+     * @expectedException \TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException
+     */
+    public function itWillThrowAnExceptionWhenGetttingFileInfoByIdentifierOnANonexistentFile()
+    {
+        $driver = $this->getInitializedDriver();
+        $driver->getFileInfoByIdentifier('/buz/biz/dings.pdf');
+    }
+
+    /**
+     * @test
      */
     public function itCanDumpFileContents()
     {
