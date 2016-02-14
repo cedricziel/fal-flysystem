@@ -462,7 +462,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         $identityMap = [];
         $oldContents = $this->filesystem->listContents($trimmedSourceIdentifier, true);
 
-        foreach($oldContents as $item) {
+        foreach ($oldContents as $item) {
             // $this->moveFileWithinStorage()$item
         }
 
@@ -607,6 +607,9 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function isWithin($folderIdentifier, $identifier)
     {
+        if ($folderIdentifier === $identifier) {
+            return true;
+        }
         $folderIdentifier = $this->canonicalizeAndCheckFileIdentifier($folderIdentifier);
         $entryIdentifier = $this->canonicalizeAndCheckFileIdentifier($identifier);
         if ($folderIdentifier === $entryIdentifier) {

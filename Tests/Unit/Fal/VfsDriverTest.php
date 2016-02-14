@@ -232,9 +232,11 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
     {
         $driver = $this->getInitializedDriver();
 
-        $this->markTestSkipped('Implement test is within');
-        //$this->assertTrue($driver->isWithin('/', '/'));
-        //$this->assertTrue($driver->isWithin('/test', '/test'));
+        $this->assertTrue($driver->isWithin('/', '/'));
+        $this->assertTrue($driver->isWithin('/test', '/test'));
+        $this->assertTrue($driver->isWithin('/test', '/test/bar.txt'));
+        $this->assertTrue($driver->isWithin('/test/', '/test/bar.txt'));
+        $this->assertFalse($driver->isWithin('/test/', '/baz/bar.txt'));
     }
 
     /**
