@@ -507,10 +507,10 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
         $this->assertEquals('/bang/boom/bang/test.txt', $adapter->createFile('test.txt', '/bang/boom/bang/'));
         $this->assertTrue($adapter->fileExists('/bang/boom/bang/test.txt'));
 
-        // $adapter->copyFileWithinStorage('/bang/boom/bang/test.txt', '/bang/boom', 'test.txt');
+        $adapter->copyFileWithinStorage('/bang/boom/bang/test.txt', '/bang/boom', 'test.txt');
 
-        // $this->assertTrue($adapter->fileExists('/bang/boom/bang/test.txt'), 'Copy, dont move');
-        // $this->assertTrue($adapter->fileExists('/bang/boom/test.txt'), 'File was copied');
+        $this->assertTrue($adapter->fileExists('/bang/boom/bang/test.txt'), 'Copy, dont move');
+        $this->assertTrue($adapter->fileExists('/bang/boom/test.txt'), 'File was copied');
         $this->markTestIncomplete('Implement recursive copying');
     }
 

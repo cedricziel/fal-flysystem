@@ -328,7 +328,9 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         $trimmedSourceFile = ltrim($fileIdentifier, '/');
         $trimmedTargetFile = ltrim($newFileIdentifier, '/');
 
-        return $this->filesystem->copy($trimmedSourceFile, $trimmedTargetFile);
+        $this->filesystem->copy($trimmedSourceFile, $trimmedTargetFile);
+
+        return $newFileIdentifier;
     }
 
     /**
