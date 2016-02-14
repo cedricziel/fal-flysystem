@@ -418,6 +418,16 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
     /**
      * @test
      */
+    public function itCanGetAFileIdentifierInAFolder()
+    {
+        $driver = $this->getInitializedDriver();
+        $this->assertEquals('/test.txt', $driver->getFileInFolder('test.txt', '/'));
+        $this->assertEquals('/biZ/baz/text.txt', $driver->getFileInFolder('text.txt', '/biZ/baz/'));
+    }
+
+    /**
+     * @test
+     */
     public function itCanDumpFileContents()
     {
         $this->markTestIncomplete('Implement dump file contents');
