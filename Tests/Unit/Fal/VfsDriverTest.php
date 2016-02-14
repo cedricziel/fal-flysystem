@@ -406,6 +406,54 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
     }
 
     /**
+     * @test
+     */
+    public function itCanDumpFileContents()
+    {
+        $this->markTestIncomplete('Implement dump file contents');
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCopyFolderWithinStorage()
+    {
+        $this->markTestIncomplete('Implement copying a file within the same storage');
+    }
+
+    /**
+     * @test
+     */
+    public function itCanMoveFolderWithinStorage()
+    {
+        $this->markTestIncomplete('Implement moving folders within the same storage');
+    }
+
+    /**
+     * @test
+     */
+    public function itCanMoveFileWithinStorage()
+    {
+        $this->markTestIncomplete('Implement moving files within the same storage');
+    }
+
+    /**
+     * @test
+     */
+    public function itCanReplaceFile()
+    {
+        $this->markTestIncomplete('Implement replacing files');
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCopyFileWithinStorage()
+    {
+        $this->markTestIncomplete('Implement copying files within the same storage');
+    }
+
+    /**
      * @return VfsDriver
      */
     private function getInitializedDriver()
