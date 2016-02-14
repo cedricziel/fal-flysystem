@@ -529,11 +529,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getFileForLocalProcessing($fileIdentifier, $writable = true)
     {
-        // TODO: Implement getFileForLocalProcessing() method.
-        DebuggerUtility::var_dump([
-            '$fileIdentifier' => $fileIdentifier,
-            '$writable' => $writable,
-        ], 'getFileForLocalProcessing');
+        return $this->copyFileToTemporaryPath($fileIdentifier);
     }
 
     /**
@@ -859,5 +855,30 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
             default:
                 throw new \InvalidArgumentException(sprintf('The information "%s" is not available.', $property));
         }
+    }
+
+    /**
+     * Copies a file to a temporary path and returns that path.
+     *
+     * @param string $fileIdentifier
+     * @return string The temporary path
+     * @throws \RuntimeException
+     */
+    protected function copyFileToTemporaryPath($fileIdentifier)
+    {
+        $temporaryPath = $this->getTemporaryPathForFile($fileIdentifier);
+        $contents = $this->filesystem->read(ltrim($fileIdentifier, '/'));
+
+        $res = fopen($temporaryPath, 'w');
+        $result = fwrite($res, $contents);
+        fclose($res);
+
+        if (false === $result) {
+            throw new \RuntimeException(
+                'Copying file "' . $fileIdentifier . '" to temporary path "' . $temporaryPath . '" failed.',
+                1320577649
+            );
+        }
+        return $temporaryPath;
     }
 }
