@@ -266,11 +266,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         $content = file_get_contents($localFilePath);
 
         if ($removeOriginal) {
-            if (is_uploaded_file($localFilePath)) {
-                $result = $this->filesystem->put($targetPath, $content);
-            } else {
-                $result = rename($localFilePath, $targetPath);
-            }
+            $result = $this->filesystem->put($targetPath, $content);
             unlink($localFilePath);
         } else {
             $result = $this->filesystem->put($targetPath, $content);
