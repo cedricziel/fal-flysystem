@@ -29,6 +29,8 @@ namespace CedricZiel\FalFlysystem\Fal;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
+use League\Flysystem\FileExistsException;
+use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException;
@@ -463,7 +465,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         $trimmedSourcePath = ltrim($sourceFolderIdentifier, '/');
         $trimmedTargetPath = ltrim($newFolderIdentifier, '/');
 
-        return $this->filesystem->copy($trimmedSourcePath, $trimmedTargetPath);
+        return $this->copyFolderRecursively($trimmedSourcePath, $trimmedTargetPath);
     }
 
     /**
@@ -895,5 +897,33 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
             );
         }
         return $temporaryPath;
+    }
+
+    /**
+     * @param string $trimmedSourcePath
+     * @param string $trimmedTargetPath
+     * @return bool
+     */
+    protected function copyFolderRecursively($trimmedSourcePath, $trimmedTargetPath)
+    {
+        try {
+            $contents = $this->filesystem->listContents($trimmedSourcePath, true);
+            foreach ($contents as $item) {
+                if ('file' === $item['type']) {
+                    try {
+                        $relPath = substr_replace($trimmedSourcePath, '', 0, strlen($item['path']));
+                        $targetPath = $trimmedTargetPath . $relPath . '/' . $item['basename'];
+                        $this->filesystem->copy($item['path'], $targetPath);
+                    } catch (FileExistsException $fee) {
+                        continue;
+                    } catch (FileNotFoundException $fnfe) {
+                        return false;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+        return true;
     }
 }

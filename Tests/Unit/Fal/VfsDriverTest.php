@@ -479,6 +479,7 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
     {
         $adapter = $this->getInitializedDriver();
         $adapter->getFilesystem()->createDir('bar');
+        $adapter->getFilesystem()->put('bar/test.txt', 'test');
         $adapter->getFilesystem()->createDir('bang/boom/bang');
 
         $this->assertTrue($adapter->folderExists('/bar'));
