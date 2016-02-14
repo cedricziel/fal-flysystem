@@ -407,6 +407,16 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
 
     /**
      * @test
+     * @expectedException \TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException
+     */
+    public function itThrowsAnExceptionWhenTryingToTheInfoFromANonexistentFolder()
+    {
+        $driver = $this->getInitializedDriver();
+        $driver->getFolderInfoByIdentifier('/test/biz/');
+    }
+
+    /**
+     * @test
      */
     public function itCanDumpFileContents()
     {
