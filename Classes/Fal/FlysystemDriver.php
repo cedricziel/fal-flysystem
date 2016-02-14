@@ -95,7 +95,8 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function mergeConfigurationCapabilities($capabilities)
     {
-        // TODO: Implement mergeConfigurationCapabilities() method.
+        $this->capabilities &= $capabilities;
+        return $this->capabilities;
     }
 
     /**
