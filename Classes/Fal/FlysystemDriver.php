@@ -31,6 +31,7 @@ use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
 use League\Flysystem\FilesystemInterface;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
+use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Exception\FileOperationErrorException;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
@@ -38,6 +39,7 @@ use TYPO3\CMS\Core\Resource\Exception\InvalidFileNameException;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Class FlysystemDriver
@@ -338,14 +340,29 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      * @param string $fileIdentifier
      * @param string $newName The target path (including the file name!)
      * @return string The identifier of the file after renaming
+     * @throws ExistingTargetFileNameException
      */
     public function renameFile($fileIdentifier, $newName)
     {
-        // TODO: Implement renameFile() method.
-        DebuggerUtility::var_dump([
-            '$fileIdentifier' => $fileIdentifier,
-            '$newName' => $newName
-        ], 'renameFile');
+        // Makes sure the Path given as parameter is valid
+        $newName = $this->sanitizeFileName($newName);
+
+        $newIdentifier = $this->canonicalizeAndCheckFileIdentifier($newName);
+        // The target should not exist already
+        if ($this->fileExists($newIdentifier)) {
+            throw new ExistingTargetFileNameException(
+                'The target file "' . $newIdentifier . '" already exists.',
+                1320291063
+            );
+        }
+
+        $sourcePath = ltrim($fileIdentifier, '/');
+        $targetPath = ltrim($newIdentifier, '/');
+        $result = $this->filesystem->rename($sourcePath, $targetPath);
+        if ($result === false) {
+            throw new \RuntimeException('Renaming file ' . $sourcePath . ' to ' . $targetPath . ' failed.', 1320375115);
+        }
+        return $newIdentifier;
     }
 
     /**

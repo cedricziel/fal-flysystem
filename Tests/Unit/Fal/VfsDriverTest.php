@@ -29,6 +29,7 @@ namespace CedricZiel\FalFlysystem\Tests\Unit\Fal;
 use CedricZiel\FalFlysystem\Fal\VfsDriver;
 use CedricZiel\FalFlysystem\Tests\Unit\AbstractFlysystemDrivertest;
 use PHPUnit_Framework_TestCase;
+use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
@@ -374,6 +375,34 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
 
         $driver->getFilesystem()->put('test.txt', 'wtf');
         $driver->hash('/test.txt', 'rot13');
+    }
+
+    /**
+     * @test
+     */
+    public function itCanRenameFiles()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $driver->getFilesystem()->put('test.txt', 'wtf');
+        $this->assertTrue($driver->fileExists('/test.txt'));
+        $driver->renameFile('/test.txt', 'bar.txt');
+        $this->assertTrue($driver->fileExists('/bar.txt'));
+        $this->assertFalse($driver->fileExists('/test.txt'));
+    }
+
+    /**
+     * @test
+     * @expectedException \TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException
+     */
+    public function itCanThrowsAnExceptionWhenRenamingFilesToExistingIdentifiers()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $driver->getFilesystem()->put('test.txt', 'wtf');
+        $driver->getFilesystem()->put('bar.txt', 'wtf');
+        $this->assertTrue($driver->fileExists('/test.txt'));
+        $driver->renameFile('/test.txt', 'bar.txt');
     }
 
     /**
