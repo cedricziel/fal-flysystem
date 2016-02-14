@@ -82,7 +82,6 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function processConfiguration()
     {
-        $this->entryPath = $this->configuration['path'];
     }
 
     /**

@@ -48,4 +48,14 @@ class FlysystemLocalDriver extends FlysystemDriver
         $this->adapter = new Local($this->entryPath, LOCK_EX, Local::SKIP_LINKS);
         $this->filesystem = new Filesystem($this->adapter);
     }
+
+    /**
+     * Processes the configuration for this driver.
+     * @return void
+     */
+    public function processConfiguration()
+    {
+        parent::processConfiguration();
+        $this->entryPath = $this->configuration['path'];
+    }
 }
