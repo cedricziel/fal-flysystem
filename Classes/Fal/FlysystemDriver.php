@@ -208,7 +208,8 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
     public function deleteFolder($folderIdentifier, $deleteRecursively = false)
     {
         $folderIdentifier = ltrim($folderIdentifier, '/');
-        $result = $this->filesystem->deleteDir(rtrim($folderIdentifier, '/'));
+        $result = $this->filesystem->deleteDir($folderIdentifier);
+
         if (false === $result) {
             throw new FileOperationErrorException(
                 'Deleting folder "' . $folderIdentifier . '" failed.',

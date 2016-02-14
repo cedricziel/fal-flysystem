@@ -350,9 +350,9 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
         $this->assertTrue($driver->folderExists('/test3/'));
 
 
-        $this->markTestIncomplete('Implement deletion');
-        // $driver->deleteFolder('/test3/');
+        // $driver->deleteFolder('/test3');
         // $this->assertFalse($driver->folderExists('/test3/'));
+        $this->markTestIncomplete('Implement deletion. Flysystem vfs doesnt support unlinking from the wrapper');
     }
 
     /**
