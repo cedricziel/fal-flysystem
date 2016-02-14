@@ -11,6 +11,11 @@ FAL drivers over and over again.
 * Use streams when possible
 * Implement more demo drivers
 
+## About Flysystem
+
+* [Presentation "Abstract Filesystems with Flysystem"](http://de.slideshare.net/ikbenfrankdejonge/abstract-filesystems-with-flysystem)
+* [Flysystem on the PHP League](http://flysystem.thephpleague.com/)
+
 ## License
 
 GPL 3
