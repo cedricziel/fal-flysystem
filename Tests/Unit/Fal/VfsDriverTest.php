@@ -556,14 +556,6 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
     /**
      * @test
      */
-    public function itCanCopyFileWithinStorage()
-    {
-        $this->markTestIncomplete('Implement copying files within the same storage');
-    }
-
-    /**
-     * @test
-     */
     public function itCanDetectTheCorrectMimeType()
     {
         $this->markTestIncomplete('Implement reading the mimetype');
