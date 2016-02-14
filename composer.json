@@ -1,6 +1,7 @@
 {
     "name": "cedricziel/fal-flysystem",
     "description": "File Abstraction Layer driver for TYPO3 CMS that uses Flysystem",
+    "keywords": ["FAL", "TYPO3", "TYPO3 CMS", "Filesystem", "Flysystem"],
     "type": "typo3-cms-extension",
     "require-dev": {
         "phpunit/phpunit": "~4.8.0",
