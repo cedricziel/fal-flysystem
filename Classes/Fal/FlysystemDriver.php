@@ -444,10 +444,29 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      * @param string $targetFolderIdentifier
      * @param string $newFolderName
      * @return array All files which are affected, map of old => new file identifiers
+     * @throws FolderDoesNotExistException
      */
     public function moveFolderWithinStorage($sourceFolderIdentifier, $targetFolderIdentifier, $newFolderName)
     {
-        // TODO: Implement moveFolderWithinStorage() method.
+        $trimmedSourceIdentifier = ltrim($sourceFolderIdentifier, '/');
+        $trimmedTargetFolderIdentifier = ltrim($targetFolderIdentifier, '/');
+
+        if (!$this->filesystem->get($trimmedSourceIdentifier)->isDir()) {
+            throw new FolderDoesNotExistException("Source folder {$sourceFolderIdentifier} does not exist");
+        }
+
+        if (!$this->filesystem->get($trimmedTargetFolderIdentifier)->isDir()) {
+            throw new FolderDoesNotExistException("Target folder {$trimmedTargetFolderIdentifier} does not exist");
+        }
+
+        $identityMap = [];
+        $oldContents = $this->filesystem->listContents($trimmedSourceIdentifier, true);
+
+        foreach($oldContents as $item) {
+            // $this->moveFileWithinStorage()$item
+        }
+
+        return $identityMap;
     }
 
     /**

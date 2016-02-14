@@ -519,6 +519,19 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
      */
     public function itCanMoveFolderWithinStorage()
     {
+        $driver = $this->getInitializedDriver();
+        $driver->getFilesystem()->createDir('bar');
+        $driver->getFilesystem()->createDir('bang/boom/bang');
+
+        $this->assertTrue($driver->folderExists('/bar'));
+        $this->assertTrue($driver->folderExists('/bang/boom/bang'));
+
+        $this->assertEquals('/bang/boom/bang/test.txt', $driver->createFile('test.txt', '/bang/boom/bang/'));
+
+        // $driver->moveFolderWithinStorage('/bang/boom/bang', '/bang/boom', 'bing');
+        // $this->assertFalse($driver->folderExists('/bang/boom/bang'));
+        // $this->assertTrue($driver->folderExists('/bang/boom/bing'));
+
         $this->markTestIncomplete('Implement moving folders within the same storage');
     }
 
