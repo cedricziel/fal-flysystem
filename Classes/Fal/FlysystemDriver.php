@@ -30,6 +30,14 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
 use League\Flysystem\FilesystemInterface;
+use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
+use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
+use TYPO3\CMS\Core\Resource\Exception\FileOperationErrorException;
+use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
+use TYPO3\CMS\Core\Resource\Exception\InvalidFileNameException;
+use TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Class FlysystemDriver
