@@ -834,7 +834,10 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function getSpecificFileInformation($fileIdentifier, $containerPath, $property)
     {
+        $baseName = basename($fileIdentifier);
+        $parts = explode('/', $fileIdentifier);
         $identifier = $this->canonicalizeAndCheckFileIdentifier($containerPath . PathUtility::basename($fileIdentifier));
+
         $file = $this->filesystem->getMetadata($fileIdentifier);
 
         switch ($property) {
@@ -847,7 +850,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
             case 'ctime':
                 return $file['timestamp'];
             case 'name':
-                return PathUtility::basename($fileIdentifier);
+                return $baseName;
             case 'mimetype':
                 return 'application/octet-stream';
             case 'identifier':
@@ -857,7 +860,13 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
             case 'identifier_hash':
                 return $this->hashIdentifier($identifier);
             case 'folder_hash':
-                return $this->hashIdentifier($this->getParentFolderIdentifierOfIdentifier($identifier));
+                if (1 < count($parts)) {
+                    return $this->hashIdentifier($this->getParentFolderIdentifierOfIdentifier($identifier));
+                } elseif (1 === count($parts)) {
+                    return sha1('/');
+                } else {
+                    return '';
+                }
             default:
                 throw new \InvalidArgumentException(sprintf('The information "%s" is not available.', $property));
         }
