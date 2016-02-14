@@ -141,6 +141,9 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
 
         $driver->createFolder('test3', '/test/test2/', true);
         $this->assertTrue($driver->folderExists('/test/test2/test3'));
+
+        $driver->createFolder('_processed_');
+        $this->assertTrue($driver->folderExists('/_processed_/'));
     }
 
     /**
