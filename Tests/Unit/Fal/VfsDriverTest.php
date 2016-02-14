@@ -448,7 +448,39 @@ class VfsDriverTest extends AbstractFlysystemDrivertest
      */
     public function itCanCopyFolderWithinStorage()
     {
+        $adapter = $this->getInitializedDriver();
+        $adapter->getFilesystem()->createDir('bar');
+        $adapter->getFilesystem()->createDir('bang/boom/bang');
+
+        $this->assertTrue($adapter->folderExists('/bar'));
+        $this->assertTrue($adapter->folderExists('/bang/boom/bang'));
+
+        $adapter->copyFolderWithinStorage('/bar', '/bang/boom/bang', 'biz');
+
+        $this->assertTrue($adapter->folderExists('/bar'), 'Copy, dont move');
+        $this->assertTrue($adapter->folderExists('/bang/boom/bang/biz'), 'Folder was copied');
         $this->markTestIncomplete('Implement copying a file within the same storage');
+    }
+
+    /**
+     * @test
+     */
+    public function itCanCopyFilesWithinStorage()
+    {
+        $adapter = $this->getInitializedDriver();
+        $adapter->getFilesystem()->createDir('bar');
+        $adapter->getFilesystem()->createDir('bang/boom/bang');
+
+        $this->assertTrue($adapter->folderExists('/bar'));
+        $this->assertTrue($adapter->folderExists('/bang/boom/bang'));
+
+        $this->assertEquals('/bang/boom/bang/test.txt', $adapter->createFile('test.txt', '/bang/boom/bang/'));
+        $this->assertTrue($adapter->fileExists('/bang/boom/bang/test.txt'));
+
+        $adapter->copyFileWithinStorage('/bang/boom/bang/test.txt', '/bang/boom', 'test.txt');
+
+        $this->assertTrue($adapter->fileExists('/bang/boom/bang/test.txt'), 'Copy, dont move');
+        $this->assertTrue($adapter->fileExists('/bang/boom/test.txt'), 'File was copied');
     }
 
     /**

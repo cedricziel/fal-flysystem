@@ -321,12 +321,12 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function copyFileWithinStorage($fileIdentifier, $targetFolderIdentifier, $fileName)
     {
-        // TODO: Implement copyFileWithinStorage() method.
-        DebuggerUtility::var_dump([
-            '$fileIdentifier' => $fileIdentifier,
-            '$targetFolderIdentifier' => $targetFolderIdentifier,
-            '$fileName' => $fileName
-        ], 'copyFileWithinStorage');
+        $newFileIdentifier = $this->canonicalizeAndCheckFileIdentifier($targetFolderIdentifier . '/' . $fileName);
+
+        $trimmedSourceFile = ltrim($fileIdentifier, '/');
+        $trimmedTargetFile = ltrim($newFileIdentifier, '/');
+
+        return $this->filesystem->copy($trimmedSourceFile, $trimmedTargetFile);
     }
 
     /**
@@ -456,7 +456,14 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function copyFolderWithinStorage($sourceFolderIdentifier, $targetFolderIdentifier, $newFolderName)
     {
-        // TODO: Implement copyFolderWithinStorage() method.
+        // This target folder path already includes the topmost level, i.e. the folder this method knows as $folderToCopy.
+        // We can thus rely on this folder being present and just create the subfolder we want to copy to.
+        $newFolderIdentifier = $this->canonicalizeAndCheckFolderIdentifier($targetFolderIdentifier . '/' . $newFolderName);
+
+        $trimmedSourcePath = ltrim($sourceFolderIdentifier, '/');
+        $trimmedTargetPath = ltrim($newFolderIdentifier, '/');
+
+        return $this->filesystem->copy($trimmedSourcePath, $trimmedTargetPath);
     }
 
     /**
