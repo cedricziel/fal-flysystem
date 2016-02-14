@@ -27,6 +27,7 @@ namespace CedricZiel\FalFlysystem\Tests\Unit\Fal;
  ***************************************************************/
 
 use CedricZiel\FalFlysystem\Fal\VfsDriver;
+use CedricZiel\FalFlysystem\Tests\Unit\AbstractFlysystemDrivertest;
 use PHPUnit_Framework_TestCase;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
@@ -37,7 +38,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  *
  * @package CedricZiel\FalFlysystem\Tests\Unit\Fal
  */
-class VfsDriverTest extends PHPUnit_Framework_TestCase
+class VfsDriverTest extends AbstractFlysystemDrivertest
 {
     protected $driver;
 
@@ -331,6 +332,48 @@ class VfsDriverTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($driver->fileExists('/test.txt'));
         $driver->createFile('test.txt', '/');
         $this->assertTrue($driver->fileExists('/test.txt'));
+    }
+
+    /**
+     * @test
+     */
+    public function itCanHashFileInfosWithSha1()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $driver->getFilesystem()->put('test.txt', 'wtf');
+
+        $hash1 = $driver->hash('/test.txt', 'sha1');
+        $hash2 = $driver->hash('/test.txt', 'sha1');
+
+        $this->assertEquals($hash1, $hash2);
+    }
+
+    /**
+     * @test
+     */
+    public function itCanHashFileInfosWithMd5()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $driver->getFilesystem()->put('test.txt', 'wtf');
+
+        $hash1 = $driver->hash('/test.txt', 'md5');
+        $hash2 = $driver->hash('/test.txt', 'md5');
+
+        $this->assertEquals($hash1, $hash2);
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function itWillThrowAnExceptionOnAnUnsupportedHashAlgo()
+    {
+        $driver = $this->getInitializedDriver();
+
+        $driver->getFilesystem()->put('test.txt', 'wtf');
+        $driver->hash('/test.txt', 'rot13');
     }
 
     /**

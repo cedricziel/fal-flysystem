@@ -30,16 +30,6 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
 use League\Flysystem\FilesystemInterface;
-use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
-use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
-use TYPO3\CMS\Core\Resource\Exception\FileOperationErrorException;
-use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
-use TYPO3\CMS\Core\Resource\Exception\InvalidFileNameException;
-use TYPO3\CMS\Core\Resource\ResourceStorage;
-use TYPO3\CMS\Core\Type\File\FileInfo;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\PathUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Class FlysystemDriver
@@ -132,10 +122,16 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function folderExists($folderIdentifier)
     {
+        $normalizedIdentifier = $this->canonicalizeAndCheckFolderIdentifier($folderIdentifier);
+        $normalizedIdentifier = ltrim(rtrim($normalizedIdentifier, '/'), '/');
+
         if ('/' === $folderIdentifier) {
             return true;
         } else {
-            return ($this->filesystem->has('/' . $folderIdentifier) && $this->filesystem->get('/' . $folderIdentifier)->isDir());
+            return (
+                $this->filesystem->has($normalizedIdentifier)
+                && $this->filesystem->get($normalizedIdentifier)->isDir()
+            );
         }
     }
 
@@ -294,7 +290,7 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
         }
 
         $parentFolderIdentifier = $this->canonicalizeAndCheckFolderIdentifier($parentFolderIdentifier);
-        $fileIdentifier =  $this->canonicalizeAndCheckFileIdentifier(
+        $fileIdentifier = $this->canonicalizeAndCheckFileIdentifier(
             $parentFolderIdentifier . $this->sanitizeFileName(ltrim($fileName, '/'))
         );
 
@@ -382,7 +378,24 @@ abstract class FlysystemDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function hash($fileIdentifier, $hashAlgorithm)
     {
-        // TODO: Implement hash() method.
+        if (!in_array($hashAlgorithm, ['sha1', 'md5'])) {
+            throw new \InvalidArgumentException(
+                'Hash algorithm "' . $hashAlgorithm . '" is not supported.',
+                1304964032
+            );
+        }
+        $propertiesToHash = ['name', 'size', 'mtime', 'identifier'];
+        switch ($hashAlgorithm) {
+            case 'sha1':
+                $hash = sha1(implode('-', $this->getFileInfoByIdentifier($fileIdentifier, $propertiesToHash)));
+                break;
+            case 'md5':
+                $hash = md5(implode('-', $this->getFileInfoByIdentifier($fileIdentifier, $propertiesToHash)));
+                break;
+            default:
+                throw new \RuntimeException('Hash algorithm ' . $hashAlgorithm . ' is not implemented.', 1329644451);
+        }
+        return $hash;
     }
 
     /**
