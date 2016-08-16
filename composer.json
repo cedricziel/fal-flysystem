@@ -26,6 +26,6 @@
     },
     "require": {
         "league/flysystem": "^1.0",
-        "typo3/cms": "^7.6.8"
+        "typo3/cms": "^7.6.10"
     }
 }
