@@ -27,5 +27,17 @@
     "require": {
         "league/flysystem": "^1.0",
         "typo3/cms": "^7.6.10"
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "mkdir -p .Build/web/typo3conf/ext/",
+            "[ -L .Build/Web/typo3conf/ext/news ] || ln -snvf ../../../../. .Build/web/typo3conf/ext/fal_flysystem"
+        ]
+    },
+    "extra": {
+        "typo3/cms": {
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "web-dir": ".Build/web"
+        }
     }
 }
